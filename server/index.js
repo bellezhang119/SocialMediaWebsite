@@ -14,6 +14,9 @@ import postRoutes from "./routes/posts.js";
 import { register } from "./controllers/auth.js";
 import { createPost } from "./controllers/post.js";
 import { verifyToken } from "./middleware/auth.js";
+import User from "./models/User.js";
+import Post from "./models/Post.js";
+import { users, posts } from "./data/index.js";
 
 /* CONFIGRATIONS */
 const __filename = fileURLToPath(import.meta.url);
@@ -25,7 +28,7 @@ app.use(helmet());
 app.use(helmet.crossOriginResourcePolicy({ policy: "cross-origin" }));
 app.use(morgan("common"));
 app.use(bodyParser.json({ limit: "30mb", extended: true}));
-app.use(bodyParser.urlencoded({ limit: "30mb", extendded: true}));
+app.use(bodyParser.urlencoded({ limit: "30mb", extended: true}));
 app.use(cors());
 app.use("/assets", express.static(path.join(__dirname, 'public/assets')));
 
@@ -57,5 +60,8 @@ mongoose.connect(process.env.MONGO_URL, {
     useUnifiedTopology: true,
 }).then(() => {
     app.listen(PORT, () => console.log(`Server Port: ${PORT}`));
+
+    //User.insertMany(users);
+    //Post.insertMany(posts);
 
 }).catch((error) => console.log(`${error} did not connect`));
