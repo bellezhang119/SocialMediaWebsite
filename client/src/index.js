@@ -1,48 +1,42 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
-import authRecuver from "./state";
+import React from "react";
+import ReactDOM from "react-dom/client";
+import "./index.css";
+import App from "./App";
+import authReducer from "./state";
 import { configureStore } from "@reduxjs/toolkit";
 import { Provider } from "react-redux";
 import {
-  presistStore,
-  PresistReducer,
+  persistStore,
+  persistReducer,
   FLUSH,
   REHYDRATE,
   PAUSE,
-  PRESIST,
+  PERSIST,
   PURGE,
-  REGISTER
-} from "redux-presist";
-import storage from "redux-presist/lib/storage";
-import { PresistGate } from "redux-presist/integration/react";
+  REGISTER,
+} from "redux-persist";
+import storage from "redux-persist/lib/storage";
+import { PersistGate } from "redux-persist/integration/react";
 
-const presistConfig = { key: "root", storage, version: 1};
-const presistedReducer = presistedReducer(presistConfig, authReducer);
-const store = configStore({
-  reducer: presistedReducer,
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware({
-    specializableCheck: {
-      ignoreActions: [
-        FLUSH,
-        REHYDRATE,
-        PAUSE,
-        PRESIST,
-        PURGE,
-        REGISTER
-      ],
-    },
-  }),
+const persistConfig = { key: "root", storage, version: 1 };
+const persistedReducer = persistReducer(persistConfig, authReducer);
+const store = configureStore({
+  reducer: persistedReducer,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+      },
+    }),
 });
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
+const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <Provider store={store}>
-      <PresistGate loading={null} presistor={persistStore(store)}>
-      <App />
-      </PresistGate>
+      <PersistGate loading={null} persistor={persistStore(store)}>
+        <App />
+      </PersistGate>
     </Provider>
   </React.StrictMode>
 );
